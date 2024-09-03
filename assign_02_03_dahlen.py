@@ -6,101 +6,72 @@
 #create an inventory management system that allows the user to add products, remove products,
 # check stock, and list all products
 
-class Product:
-    def __init__(self, name, quantity, price_per_unit):
-        """
-        Initializes a Product object with a name, quantity, and price per unit.
-        """
-        self.name = name
-        self.quantity = quantity  # Available stock for the product
-        self.price_per_unit = price_per_unit  # Price of one unit of the product
+# Global dictionary to store products
+products = {}
 
-    def add_stock(self, amount):
-        """
-        Adds stock to the product's current quantity.
-        """
-        self.quantity += amount
-        print(f"Added {amount} units to {self.name}. Current stock: {self.quantity}")
+def add_product():
+    """
+    Adds a new product to the inventory. If the product already exists, updates the stock.
+    """
+    name = input("Enter product name: ")
+    quantity = int(input("Enter product quantity: "))
+    price_per_unit = float(input("Enter price per unit: "))
 
-    def remove_stock(self, amount):
-        """
-        Removes stock from the product's current quantity.
-        Checks if there is enough stock before removing.
-        """
-        if amount > self.quantity:
-            print(f"Not enough stock to remove {amount} units of {self.name}. Current stock: {self.quantity}")
-        else:
-            self.quantity -= amount
-            print(f"Removed {amount} units from {self.name}. Current stock: {self.quantity}")
+    # Check if the product already exists in the inventory
+    if name in products:
+        print(f"{name} already exists in the inventory. Updating stock instead.")
+        products[name]['quantity'] += quantity  # Update stock if product exists
+    else:
+        # Add new product as a dictionary with name, quantity, and price per unit
+        products[name] = {
+            'name': name,
+            'quantity': quantity,
+            'price_per_unit': price_per_unit
+        }
+        print(f"Added {name} to the inventory.")
 
-    def get_stock(self):
-        """
-        Returns the current stock level of the product.
-        """
-        return self.quantity
+def remove_product():
+    """
+    Removes a product from the inventory if it exists.
+    """
+    name = input("Enter product name to remove: ")
 
-    def display_product_info(self):
-        """
-        Displays the product details including name, price per unit, and stock quantity.
-        """
-        print(f"Product: {self.name} | Price: ${self.price_per_unit:.2f} | Stock: {self.quantity}")
+    # Check if the product exists, then remove it
+    if name in products:
+        del products[name]
+        print(f"Removed {name} from the inventory.")
+    else:
+        print(f"{name} does not exist in the inventory.")
 
+def check_stock():
+    """
+    Checks the stock level of a product. If the product doesn't exist, it notifies the user.
+    """
+    name = input("Enter product name to check stock: ")
 
-class Inventory:
-    def __init__(self):
-        """
-        Initializes the inventory with an empty dictionary to store products.
-        """
-        self.products = {}
+    # Check if the product exists in the inventory
+    if name in products:
+        stock = products[name]['quantity']
+        print(f"{name} has {stock} units in stock.")
+    else:
+        print(f"{name} is not found in the inventory.")
 
-    def add_product(self, name, quantity, price_per_unit):
-        """
-        Adds a new product to the inventory. If the product already exists, updates the stock.
-        """
-        if name in self.products:
-            print(f"{name} already exists in the inventory. Updating stock instead.")
-            self.products[name].add_stock(quantity)
-        else:
-            product = Product(name, quantity, price_per_unit)
-            self.products[name] = product
-            print(f"Added {name} to the inventory.")
-
-    def remove_product(self, name):
-        """
-        Removes a product from the inventory if it exists.
-        """
-        if name in self.products:
-            del self.products[name]
-            print(f"Removed {name} from the inventory.")
-        else:
-            print(f"{name} does not exist in the inventory.")
-
-    def check_stock(self, name):
-        """
-        Checks the stock level of a product. If the product doesn't exist, it notifies the user.
-        """
-        if name in self.products:
-            stock = self.products[name].get_stock()
-            print(f"{name} has {stock} units in stock.")
-        else:
-            print(f"{name} is not found in the inventory.")
-
-    def list_products(self):
-        """
-        Lists all products in the inventory with their details.
-        """
-        if self.products:
-            print("Inventory List:")
-            for product in self.products.values():
-                product.display_product_info()
-        else:
-            print("No products in the inventory.")
-
+def list_products():
+    """
+    Lists all products in the inventory with their details.
+    """
+    if products:
+        print("Inventory List:")
+        # Loop through each product and print its details
+        for product in products.values():
+            print(f"Product: {product['name']} | Price: ${product['price_per_unit']:.2f} | Stock: {product['quantity']}")
+    else:
+        print("No products in the inventory.")
 
 def main():
-    # Create an instance of the inventory
-    inventory = Inventory()
-
+    """
+    Main function to handle the menu-driven inventory management system.
+    """
     while True:
         # Display the menu options
         print("\nInventory Management System")
@@ -113,38 +84,22 @@ def main():
         # Get user input for the action they want to perform
         choice = input("Enter your choice (1-5): ")
 
+        # Call the appropriate function based on user choice
         if choice == '1':
-            # Get input for new product details
-            name = input("Enter product name: ")
-            quantity = int(input("Enter product quantity: "))
-            price_per_unit = float(input("Enter price per unit: "))
-
-            # Add the product to the inventory
-            inventory.add_product(name, quantity, price_per_unit)
-
+            add_product()  # Add a new product
         elif choice == '2':
-            # Get the product name to remove
-            name = input("Enter product name to remove: ")
-            inventory.remove_product(name)
-
+            remove_product()  # Remove an existing product
         elif choice == '3':
-            # Get the product name to check stock
-            name = input("Enter product name to check stock: ")
-            inventory.check_stock(name)
-
+            check_stock()  # Check the stock of a product
         elif choice == '4':
-            # List all products in the inventory
-            inventory.list_products()
-
+            list_products()  # List all products in the inventory
         elif choice == '5':
-            # Exit the program
             print("Exiting the inventory management system.")
-            break
-
+            break  # Exit the loop to end the program
         else:
-            print("Invalid choice. Please choose again.")
+            print("Invalid choice. Please choose again.")  # Handle invalid input
 
-
-# Run the inventory management system
+# Entry point of the program
 if __name__ == "__main__":
     main()
+
