@@ -1,7 +1,7 @@
 # Leo Dahlen
 #CBIS 4210
 #assignment 2.3
-#8/31/2024
+# 9/3/2024
 
 #create an inventory management system that allows the user to add products, remove products,
 # check stock, and list all products

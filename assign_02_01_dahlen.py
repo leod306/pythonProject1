@@ -1,7 +1,7 @@
 # Leo Dahlen
 #CBIS 4210
 #assignment 2.1
-#8/31/2024
+# 9/3/2024
 
 # create a to do list program that allows the user to add tasks, remove tasks, and view tasks
 
